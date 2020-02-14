@@ -10,18 +10,19 @@ class Preset extends LaravelPreset
 
 {
 
+  
     /**
    * Install the preset.
    *
    * @return void
    */
 
-  public static function install()
+  public static function install($package, $token)
 
   {
 
     static::ensureComponentDirectoryExists();
-    static::updatePackages();
+    static::updateVuePackages(false, $package, $token);
     static::updateWebpackConfiguration();
     static::updateImports();
     static::updateComponent();
@@ -45,9 +46,42 @@ class Preset extends LaravelPreset
      * @param  array  $packages
      * @return array
      */
-    protected static function updatePackageArray(array $packages)
+
+    static function updateVuePackages($dev = true, $package, $token)
     {
-        return ['vue' => '^2.6.11', 'mdbvue' => '^6.3.0'] + Arr::except($packages, [
+        if (! file_exists(base_path('package.json'))) {
+            return;
+        }
+
+        $configurationKey = $dev ? 'devDependencies' : 'dependencies';
+
+        $packages = json_decode(file_get_contents(base_path('package.json')), true);
+
+        $packages[$configurationKey] = static::updatePackageArray(
+            array_key_exists($configurationKey, $packages) ? $packages[$configurationKey] : [],
+            $package,
+            $token
+        );
+
+        ksort($packages[$configurationKey]);
+
+        file_put_contents(
+            base_path('package.json'),
+            json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
+        );
+    }
+
+    protected static function updatePackageArray(array $packages, $package, $token)
+    {
+
+        if ($package == 'pro') {
+            $source = 'git+https://oauth2:' . $token . '@git.mdbootstrap.com/mdb/vue/vu-pro.git';
+        }
+        else {
+            $source =  'mdbootstrap/Vue-Bootstrap-with-Material-Design';
+        }
+
+        return ['vue' => '^2.6.11', 'mdbvue' => $source] + Arr::except($packages, [
             '@babel/preset-react',
             'react',
             'react-dom',
@@ -96,5 +130,6 @@ class Preset extends LaravelPreset
         copy(__DIR__.'/mdb-stubs/welcome.blade.php', resource_path('views/welcome.blade.php'));
     }
   
+
 
 }
