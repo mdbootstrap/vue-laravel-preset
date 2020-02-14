@@ -1,0 +1,27 @@
+{
+  "name": "mdbvue/laravel-preset",
+  "description": "Laravel Preset: Vue + MDB",
+  "keywords": [
+    "laravel",
+    "mdb",
+    "mdbvue",
+    "bootstrap-material-design",
+    "vue",
+    "laravel-preset"
+  ],
+  "license": "MIT",
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "MDBVue\\LaravelPreset\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "MDBVue\\LaravelPreset\\MDBServiceProvider"
+      ]
+    }
+  }
+}
