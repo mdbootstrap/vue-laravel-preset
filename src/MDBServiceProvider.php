@@ -27,6 +27,8 @@ class MDBServiceProvider extends ServiceProvider
         PresetCommand::macro('mdbvue', function ($command) 
         {
             Preset::install();
+
+            $command->info('Vue & MDB Preset has been added to your project. Compile your assets and start creating!');
         });
     }
 }
