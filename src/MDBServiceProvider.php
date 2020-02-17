@@ -27,24 +27,18 @@ class MDBServiceProvider extends ServiceProvider
         PresetCommand::macro('mdbvue', function ($command) 
         {
             $package = $command->anticipate('Do you want to install pro or free version? (f - free, p - pro)', ['free', 'pro']);
-
             if ($package == 'pro')
-
             {
-
                 $token = $command->ask('Enter your Gitlab token');
-
             }
-
             else
-
             {
-
-                $token = null;
-
+                $token = "";
             }
 
-            Preset::install($package, $token);
+            $preset = new Preset($package, $token);
+
+            $preset->install();
 
             $command->info('Vue & MDB Preset has been added to your project. Compile your assets and start creating!');
         });

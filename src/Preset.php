@@ -10,19 +10,28 @@ class Preset extends LaravelPreset
 
 {
 
-  
+    static $package;
+    static $token;
+
+    public function __construct(string $package, string $token)
+
+    {   
+
+        self::$package = $package;
+        self::$token = $token;
+
+    }
     /**
    * Install the preset.
    *
    * @return void
    */
 
-  public static function install($package, $token)
+  public static function install()
 
   {
-
     static::ensureComponentDirectoryExists();
-    static::updateVuePackages(false, $package, $token);
+    static::updatePackages();
     static::updateWebpackConfiguration();
     static::updateImports();
     static::updateComponent();
@@ -30,15 +39,6 @@ class Preset extends LaravelPreset
     static::updateMainPage();
 
   }
-
-  // public static function updatePackageArray($packages)
-
-  // {
-
-  //   return ['mdbvue' => '^6.3.0'] + Arr::except($packages, []);
-
-  // }
-
   
      /**
      * Update the given package array.
@@ -47,35 +47,13 @@ class Preset extends LaravelPreset
      * @return array
      */
 
-    static function updateVuePackages($dev = true, $package, $token)
-    {
-        if (! file_exists(base_path('package.json'))) {
-            return;
-        }
 
-        $configurationKey = $dev ? 'devDependencies' : 'dependencies';
 
-        $packages = json_decode(file_get_contents(base_path('package.json')), true);
-
-        $packages[$configurationKey] = static::updatePackageArray(
-            array_key_exists($configurationKey, $packages) ? $packages[$configurationKey] : [],
-            $package,
-            $token
-        );
-
-        ksort($packages[$configurationKey]);
-
-        file_put_contents(
-            base_path('package.json'),
-            json_encode($packages, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT).PHP_EOL
-        );
-    }
-
-    protected static function updatePackageArray(array $packages, $package, $token)
+    protected static function updatePackageArray(array $packages)
     {
 
-        if ($package == 'pro') {
-            $source = 'git+https://oauth2:' . $token . '@git.mdbootstrap.com/mdb/vue/vu-pro.git';
+        if (self::$package == 'pro') {
+            $source = 'git+https://oauth2:' . self::$token . '@git.mdbootstrap.com/mdb/vue/vu-pro.git';
         }
         else {
             $source =  'mdbootstrap/Vue-Bootstrap-with-Material-Design';
@@ -129,7 +107,6 @@ class Preset extends LaravelPreset
     {
         copy(__DIR__.'/mdb-stubs/welcome.blade.php', resource_path('views/welcome.blade.php'));
     }
-  
 
 
 }
