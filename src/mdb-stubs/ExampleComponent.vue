@@ -20,10 +20,11 @@
                         to learn more about MDB components.</mdb-card-text
                     >
                     <mdb-btn
-                        color="grey"
+                        outline="grey"
                         icon="chevron-right"
                         icon-right
                         tag="a"
+                        type="anchor"
                         href="https://mdbootstrap.com/docs/vue/getting-started/quick-start/"
                         target="_blank"
                         >Getting started</mdb-btn
